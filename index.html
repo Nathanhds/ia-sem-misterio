@@ -1,0 +1,228 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>IA sem Mistério</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&display=swap">
+<style>
+/* Layout: coluna única de leitura, blocos com bandas de cor por tema; letra grande pensando em leitores mais velhos */
+:root {
+  --bg: #f5f7fb;
+  --surface: #ffffff;
+  --ink: #14213a;
+  --muted: #4a5672;
+  --line: #d6dcea;
+  --accent: #2346d6;
+  --accent-soft: #e3e9ff;
+  --warn: #f2b705;
+  --warn-ink: #3a2a00;
+  --good: #16794a;
+  --good-soft: #dff3e8;
+  --bad: #b3261e;
+  --bad-soft: #fbe3e1;
+  --display: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --body: "Atkinson Hyperlegible", "Segoe UI", system-ui, sans-serif;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #0e1424; --surface: #161e33; --ink: #e8ecf7; --muted: #a5afc8; --line: #2a3553;
+  --accent: #8ea6ff; --accent-soft: #1f2a52; --warn: #f2c230; --warn-ink: #2b2000;
+  --good: #5fd39a; --good-soft: #12301f; --bad: #ff8a80; --bad-soft: #3a1714; color-scheme: dark } }
+:root[data-theme="dark"] {
+  --bg: #0e1424; --surface: #161e33; --ink: #e8ecf7; --muted: #a5afc8; --line: #2a3553;
+  --accent: #8ea6ff; --accent-soft: #1f2a52; --warn: #f2c230; --warn-ink: #2b2000;
+  --good: #5fd39a; --good-soft: #12301f; --bad: #ff8a80; --bad-soft: #3a1714; color-scheme: dark }
+
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--ink); font-family: var(--body); font-size: 18px; line-height: 1.6; }
+.wrap { max-width: 760px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+h1, h2, h3 { font-family: var(--display); line-height: 1.15; text-wrap: balance; margin: 0; }
+h1 { font-size: clamp(2.4rem, 7vw, 3.6rem); font-weight: 800; letter-spacing: -0.02em; }
+h2 { font-size: clamp(1.6rem, 4.5vw, 2.1rem); font-weight: 800; }
+h3 { font-size: 1.2rem; font-weight: 600; }
+p { margin: 0; max-width: 65ch; }
+.eyebrow { font-size: .8rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--accent); }
+
+header.hero { padding-block: 48px 32px; }
+.hero .wrap { display: grid; gap: 18px; }
+.hero p.lead { font-size: 1.2rem; color: var(--muted); }
+.hero mark { background: var(--warn); color: var(--warn-ink); padding: 0 .2em; border-radius: 3px; }
+nav.toc { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+nav.toc a { color: var(--accent); background: var(--accent-soft); text-decoration: none; padding: 6px 14px; border-radius: 999px; font-weight: 700; font-size: .95rem; }
+nav.toc a:focus-visible, button:focus-visible, input:focus-visible { outline: 3px solid var(--warn); outline-offset: 2px; }
+
+section { padding-block: 36px; border-top: 1px solid var(--line); }
+section .wrap { display: grid; gap: 18px; }
+
+.examples { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 12px; }
+.ex { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 14px 16px; display: grid; gap: 4px; }
+.ex strong { font-family: var(--display); font-size: 1.05rem; }
+.ex span { color: var(--muted); font-size: .95rem; }
+
+/* círculos encaixados IA > ML > DL */
+.nest { display: grid; gap: 0; }
+.ring { border: 2px solid var(--accent); border-radius: 18px; padding: 14px 16px 16px; display: grid; gap: 10px; }
+.ring.r1 { background: var(--surface); }
+.ring.r2 { background: var(--accent-soft); border-style: dashed; }
+.ring.r3 { background: var(--surface); }
+.ring b { font-family: var(--display); font-size: 1.1rem; }
+.ring small { display: block; color: var(--muted); font-size: .92rem; }
+
+.callout { background: var(--warn); color: var(--warn-ink); border-radius: 10px; padding: 16px 18px; font-weight: 700; }
+
+
+.table-wrap { overflow-x: auto; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); }
+table { border-collapse: collapse; width: 100%; min-width: 520px; font-size: .97rem; }
+th, td { text-align: left; padding: 12px 14px; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { font-family: var(--display); font-weight: 600; background: var(--accent-soft); }
+tr:last-child td { border-bottom: 0; }
+
+.checklist { display: grid; gap: 8px; list-style: none; padding: 0; margin: 0; }
+.checklist label { display: flex; gap: 12px; align-items: flex-start; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; cursor: pointer; }
+.checklist input { width: 24px; height: 24px; margin-top: 2px; accent-color: var(--good); flex: none; }
+.checklist input:checked + span { color: var(--muted); text-decoration: line-through; }
+.progress { font-weight: 700; color: var(--good); }
+
+ol.rules { margin: 0; padding-left: 1.4em; display: grid; gap: 10px; font-size: 1.08rem; }
+ol.rules li::marker { font-family: var(--display); font-weight: 800; color: var(--accent); }
+
+footer { padding-block: 32px 48px; border-top: 1px solid var(--line); color: var(--muted); font-size: .92rem; }
+footer .wrap { display: grid; gap: 6px; }
+footer a { color: var(--accent); }
+@media (prefers-reduced-motion: no-preference) { html { scroll-behavior: smooth; } }
+</style>
+</head>
+<body>
+<header class="hero">
+  <div class="wrap">
+    <span class="eyebrow">Guia para a família</span>
+    <h1>IA sem Mistério</h1>
+    <p class="lead">A Inteligência Artificial já está no seu celular, no banco e no WhatsApp. Aqui você entende o que ela é, como pode ajudar e, principalmente, <mark>como não cair em golpes</mark> feitos com ela.</p>
+    <nav class="toc" aria-label="Seções">
+      <a href="#o-que-e">O que é</a>
+      <a href="#dia-a-dia">No dia a dia</a>
+      <a href="#generativa">IA que cria</a>
+      <a href="#riscos">Riscos</a>
+      <a href="#checklist">Checklist</a>
+    </nav>
+  </div>
+</header>
+
+<section id="o-que-e">
+  <div class="wrap">
+    <span class="eyebrow">Parte 1</span>
+    <h2>O que é Inteligência Artificial?</h2>
+    <p>É um programa de computador que aprende com exemplos. Em vez de alguém escrever todas as regras, o sistema vê milhares de fotos, textos ou áudios e descobre padrões sozinho. Depois usa esses padrões para responder coisas novas.</p>
+    <p>Ela <strong>não pensa nem entende</strong> como uma pessoa. Ela calcula qual é a resposta mais provável. Por isso às vezes acerta muito e às vezes erra feio, com toda a confiança.</p>
+    <h3>IA, Machine Learning e Deep Learning</h3>
+    <p>São três nomes que vivem um dentro do outro, como caixas encaixadas:</p>
+    <div class="nest" role="img" aria-label="Deep Learning dentro de Machine Learning, que fica dentro de Inteligência Artificial">
+      <div class="ring r1">
+        <div><b>Inteligência Artificial</b><small>A área toda: máquinas fazendo tarefas "inteligentes". Ex.: assistente de voz.</small></div>
+        <div class="ring r2">
+          <div><b>Machine Learning (Aprendizado de Máquina)</b><small>A IA que aprende com dados. Ex.: filtro de spam do e-mail.</small></div>
+          <div class="ring r3">
+            <div><b>Deep Learning</b><small>Aprendizado com "redes neurais" de muitas camadas, ótimo para imagem, voz e texto. Ex.: desbloqueio do celular pelo rosto.</small></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="callout">Os dados são a "comida" da IA. Dados errados ou preconceituosos geram respostas erradas ou injustas. E muitos desses dados são os nossos.</div>
+  </div>
+</section>
+
+<section id="dia-a-dia">
+  <div class="wrap">
+    <span class="eyebrow">Parte 2</span>
+    <h2>Você já usa IA todo dia</h2>
+    <div class="examples">
+      <div class="ex"><strong>Vídeos e músicas</strong><span>YouTube, Netflix e Spotify sugerem o que você vai gostar.</span></div>
+      <div class="ex"><strong>Celular</strong><span>Desbloqueio pelo rosto e corretor do teclado.</span></div>
+      <div class="ex"><strong>GPS</strong><span>Waze e Google Maps preveem o trânsito e a rota mais rápida.</span></div>
+      <div class="ex"><strong>Banco</strong><span>Bloqueia compras estranhas no cartão para evitar fraude.</span></div>
+      <div class="ex"><strong>Assistentes de voz</strong><span>Google Assistente, Siri e Alexa.</span></div>
+      <div class="ex"><strong>Atendimento</strong><span>Robôs de conversa de lojas, operadoras e órgãos públicos.</span></div>
+    </div>
+  </div>
+</section>
+
+<section id="generativa">
+  <div class="wrap">
+    <span class="eyebrow">Parte 3</span>
+    <h2>A IA que cria: IA Generativa</h2>
+    <p>É a IA que produz conteúdo novo: textos, imagens, vozes e vídeos. ChatGPT, Gemini e Claude são exemplos. Bem usada, ela ajuda bastante:</p>
+    <div class="examples">
+      <div class="ex"><strong>Explicar</strong><span>"Me explica esse boleto como se eu tivesse 10 anos."</span></div>
+      <div class="ex"><strong>Resumir</strong><span>Contratos, comunicados e textos longos.</span></div>
+      <div class="ex"><strong>Escrever</strong><span>Currículo, mensagem difícil, e-mail formal.</span></div>
+      <div class="ex"><strong>Traduzir</strong><span>Conversas, placas e cardápios em viagem.</span></div>
+    </div>
+    <p>Mas atenção: ela pode <strong>inventar</strong> fatos, leis, remédios e números. Isso se chama "alucinação". Para saúde, dinheiro e direitos, confirme sempre com um profissional ou site oficial.</p>
+  </div>
+</section>
+
+<section id="riscos">
+  <div class="wrap">
+    <span class="eyebrow">Parte 4</span>
+    <h2>Riscos e como se proteger</h2>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Risco</th><th>Como acontece</th><th>O que fazer</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Voz clonada</strong></td><td>Com poucos segundos de áudio das redes, copiam a voz de um parente pedindo dinheiro.</td><td>Combine uma palavra-senha da família. Desligue e ligue de volta no número que você já conhece.</td></tr>
+          <tr><td><strong>Vídeo falso (deepfake)</strong></td><td>Famosos, médicos e políticos "vendendo" produtos ou investimentos milagrosos.</td><td>Desconfie de promessa fácil. Procure a notícia em sites confiáveis.</td></tr>
+          <tr><td><strong>Fake news</strong></td><td>Textos e fotos falsas circulando em grupos.</td><td>Cheque antes de repassar: Fato ou Fake, Agência Lupa, Aos Fatos.</td></tr>
+          <tr><td><strong>Mensagem falsa de banco ou loja</strong></td><td>Textos perfeitos, sem erro, com link para "regularizar".</td><td>Nunca clique no link. Abra o aplicativo oficial.</td></tr>
+          <tr><td><strong>Seus dados</strong></td><td>O que você cola num chatbot pode ser guardado e usado.</td><td>Não coloque CPF, senhas, documentos ou exames em IA.</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>A <strong>LGPD</strong> (Lei Geral de Proteção de Dados) garante que você pode perguntar a uma empresa quais dados ela tem sobre você, pedir correção e pedir exclusão.</p>
+  </div>
+</section>
+
+<section id="checklist">
+  <div class="wrap">
+    <span class="eyebrow">Parte 5 · Para fazer hoje</span>
+    <h2>Checklist de segurança</h2>
+    <p class="progress" id="progress">0 de 6 feitos</p>
+    <ul class="checklist" id="checklistItems">
+      <li><label><input type="checkbox" id="c1"><span>Combinei uma palavra-senha com a família para emergências.</span></label></li>
+      <li><label><input type="checkbox" id="c2"><span>Ativei a verificação em duas etapas no WhatsApp (Configurações › Conta).</span></label></li>
+      <li><label><input type="checkbox" id="c3"><span>Deixei meu perfil e fotos das redes só para contatos.</span></label></li>
+      <li><label><input type="checkbox" id="c4"><span>Sei que banco nunca pede senha, código ou Pix por mensagem ou ligação.</span></label></li>
+      <li><label><input type="checkbox" id="c5"><span>Não coloco documentos, senhas ou dados de saúde em chatbots.</span></label></li>
+      <li><label><input type="checkbox" id="c6"><span>Antes de compartilhar uma notícia, pergunto: de onde veio isso?</span></label></li>
+    </ul>
+    <h3>Regras de ouro</h3>
+    <ol class="rules">
+      <li>Pediu dinheiro com urgência? Pare e confirme por outro caminho.</li>
+      <li>Voz e vídeo podem ser falsos, mesmo de alguém que você ama.</li>
+      <li>A IA ajuda, mas confira o que é importante.</li>
+      <li>Seus dados valem dinheiro. Entregue o mínimo.</li>
+      <li>Na dúvida, pergunte para alguém da família antes de agir.</li>
+    </ol>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <p>Material educativo de extensão do curso de Engenharia de Software, feito por Nathan Henrique da Silva.</p>
+    <p>Fontes para checar notícias: <a href="https://g1.globo.com/fato-ou-fake/" target="_blank" rel="noopener">Fato ou Fake</a> · <a href="https://lupa.uol.com.br/" target="_blank" rel="noopener">Agência Lupa</a> · <a href="https://www.aosfatos.org/" target="_blank" rel="noopener">Aos Fatos</a> · <a href="https://www.gov.br/anpd/" target="_blank" rel="noopener">ANPD (LGPD)</a></p>
+  </div>
+</footer>
+
+<script>
+const boxes = [...document.querySelectorAll("#checklistItems input")];
+const prog = document.getElementById("progress");
+function load() { try { return JSON.parse(localStorage.getItem("ia-check") || "{}"); } catch (e) { return {}; } }
+function save(s) { try { localStorage.setItem("ia-check", JSON.stringify(s)); } catch (e) {} }
+const state = load();
+function update() { const n = boxes.filter(b => b.checked).length; prog.textContent = n === boxes.length ? "Tudo feito! Sua família está mais protegida." : `${n} de ${boxes.length} feitos`; }
+boxes.forEach(b => { b.checked = !!state[b.id]; b.addEventListener("change", () => { state[b.id] = b.checked; save(state); update(); }); });
+update();
+</script>
+</body>
+</html>
